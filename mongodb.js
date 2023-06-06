@@ -22,30 +22,31 @@ async function run() {
   const usersCollection = db.collection("users");
   const tasksCollection = db.collection("tasks");
 
-  // usersCollection.insertOne({ name: 'Person 1', age: 20})
-  // usersCollection.insertOne({ name: 'Person 2', age: 20})
-  // usersCollection.insertOne({ name: 'Person 3', age: 25})
+  // const query = { age: 30 };
 
-  // usersCollection
-  //   .findOne({ name: 'Person 2' })
-  //   .then((result) => {
-  //     console.log(`Found one: ${JSON.stringify(result)}`);
-  //   });
+  // var cursor = await usersCollection.find(query).toArray();
+  // console.log('Found records in users collection: ' + JSON.stringify(cursor))
 
-  const query = { age: 20 };
+  // var count = await usersCollection.countDocuments({ age: 20 })
+  // console.log(`Found ${count} matching records`)
 
-  var cursor = await usersCollection.find(query).toArray();
-  console.log('Found records in users collection: ' + JSON.stringify(cursor))
+  // var findById = await tasksCollection.findOne({
+  //   _id: new ObjectId("647baac87be2f0f393859c4a"),
+  // });
+  // console.log(`Found records with matching id: ${JSON.stringify(findById)}`)
 
-  var count = await usersCollection.countDocuments({ age: 20 })
-  console.log(`Found ${count} matching records`)
+  // var findAllTasksFilter = await tasksCollection.find({completed: false}).toArray()
+  // console.log(`Found all incompleted tasks: ${JSON.stringify(findAllTasksFilter)}`)
 
-  var findById = await tasksCollection.findOne({
-    _id: new ObjectId("647baac87be2f0f393859c4a"),
-  });
-  console.log(`Found records with matching id: ${JSON.stringify(findById)}`)
+  usersCollection.deleteMany({
+    age: 30
+  })
+  .then(result => console.log(result))
+  .catch(error => console.log(error))
 
-  var findAllTasksFilter = await tasksCollection.find({completed: false}).toArray()
-  console.log(`Found all incompleted tasks: ${JSON.stringify(findAllTasksFilter)}`)
+  tasksCollection
+    .deleteMany({ description: "Clean up poop" })
+    .then((result) => console.log(result))
+    .catch((error) => console.log(error));
 }
 run()
