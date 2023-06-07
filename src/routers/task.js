@@ -2,6 +2,17 @@ const express = require('express')
 const Task = require('../db/models/tasks')
 const router = new express.Router()
 
+router.post("/tasks", async (req, res) => {
+  const task = new Task(req.body);
+
+  try {
+    task.save();
+    res.status(201).send(task);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
 router.get("/tasks/:id", async (req, res) => {
   const _id = req.params.id;
 
@@ -23,17 +34,6 @@ router.get("/tasks", async (req, res) => {
     res.send(tasks);
   } catch (e) {
     res.status(500).send();
-  }
-});
-
-router.post("/tasks", async (req, res) => {
-  const task = new Task(req.body);
-
-  try {
-    task.save();
-    res.status(201).send(task);
-  } catch (e) {
-    res.status(400).send(e);
   }
 });
 
