@@ -38,7 +38,8 @@ router.get("/tasks/:id", auth,  async (req, res) => {
   }
 });
 
-
+// GET /tasks?completed=true
+// GET /tasks?limit10&skip=20
 router.get("/tasks", auth, async (req, res) => {
   const match = {}
 
@@ -50,7 +51,11 @@ router.get("/tasks", auth, async (req, res) => {
     console.log(`Getting all tasks for ${req.user._id}`)
     await req.user.populate({
       path: 'tasks',
-      match
+      match,
+      options: {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.limit) * parseInt((req.query.page) - 1)
+      }
     });
     res.send(req.user.tasks);
     console.log('All task have been found')
