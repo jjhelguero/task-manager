@@ -13,6 +13,7 @@ router.post("/tasks", auth, async (req, res) => {
     console.log(`Attempting to add task owned by ${userId}`);
     task.save();
     res.status(201).send(task);
+    console.log('Added task successfully.')
   } catch (e) {
     res.status(400).send(e);
   }
