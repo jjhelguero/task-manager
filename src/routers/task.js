@@ -38,10 +38,20 @@ router.get("/tasks/:id", auth,  async (req, res) => {
   }
 });
 
+
 router.get("/tasks", auth, async (req, res) => {
+  const match = {}
+
+  if(req.query.completed) {
+    match.completed = req.query.completed == 'true'
+  }
+
   try {
     console.log(`Getting all tasks for ${req.user._id}`)
-    await req.user.populate("tasks");
+    await req.user.populate({
+      path: 'tasks',
+      match
+    });
     res.send(req.user.tasks);
     console.log('All task have been found')
   } catch (e) {
