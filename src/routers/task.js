@@ -4,11 +4,13 @@ const auth = require('../middleware/auth')
 const router = new express.Router()
 
 router.post("/tasks", auth, async (req, res) => {
+  const userId = req.user._id
   const task = new Task({
     ...req.body,
-    owner: req.user._id
-  })
+    owner: userId,
+  });
   try {
+    console.log(`Attempting to add task owned by ${userId}`);
     task.save();
     res.status(201).send(task);
   } catch (e) {
@@ -17,14 +19,18 @@ router.post("/tasks", auth, async (req, res) => {
 });
 
 router.get("/tasks/:id", auth,  async (req, res) => {
-  const _id = req.params.id;
+  const taskId = req.params.id;
+  const userId = req.user._id;
 
   try {
-    const task = await Task.findOne({_id, owner: req.user._id})
+    console.log(`Attempting to get ${taskId} task owned by ${userId}`);
+    const task = await Task.findOne({_id: taskId, owner: userId})
     if (!task) {
+      console.log("Task was not found.");
       return res.status(404).send();
     }
     res.send(task);
+    console.log("Task was found.");
   } catch (e) {
     console.log(e)
     res.status(500).send();
@@ -33,8 +39,10 @@ router.get("/tasks/:id", auth,  async (req, res) => {
 
 router.get("/tasks", auth, async (req, res) => {
   try {
+    console.log(`Getting all tasks for ${req.user._id}`)
     await req.user.populate("tasks");
     res.send(req.user.tasks);
+    console.log('All task have been found')
   } catch (e) {
     res.status(500).send();
   }
@@ -51,9 +59,13 @@ router.patch("/tasks/:id", auth,  async (req, res) => {
     return res.status(400).send({ error: "Invalid updates!" });
   }
   try {
-    const task = await Task.findOne({_id: req.params.id, owner: req.user._id})
+    const taskId = req.params.id;
+    const userId = req.user._id;
+    console.log(`Attempting to update ${taskId} task owned by ${userId}`);
+    const task = await Task.findOne({ _id: taskId, owner: userId });
     
     if (!task) {
+      console.log("Task was not updated.");
       return res.status(404).send();
     }
 
@@ -61,6 +73,7 @@ router.patch("/tasks/:id", auth,  async (req, res) => {
 
     await task.save()
     res.send(task);
+    console.log(`Task was updated!`);
   } catch (e) {
     res.status(400).send();
   }
@@ -70,7 +83,7 @@ router.delete("/tasks/:id", auth, async (req, res) => {
   try {
     const taskId = req.params.id
     const userId = req.user._id
-    console.log(`Attempting to delete task: ${taskId} owned by ${userId}`);
+    console.log(`Attempting to delete ${taskId} task owned by ${userId}`);
     const task = await Task.findOneAndDelete({
       _id: taskId,
       owner: userId,
