@@ -26,16 +26,18 @@ const upload = multer({
       return cb(new Error("Please upload a JPG, JPEG, or PNG file!"));
     }
     // return callback success
-    console.log("Upload successful");
     cb(undefined, true);
   },
 });
 
-router.post('/users/me/avatar', auth, upload.single('avatar'), (req, res) => {
-
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+  req.user.avatar = req.file.buffer
+  await req.user.save()
   res.send();
+  console.log("Upload successful");
 }, (error, req, res, next) => {
-    res.status(400).send({error: error.message})
+  console.log(error.message)
+  res.status(400).send({error: error.message})
 })
 
 router.post('/users/login', async(req, res) => {
