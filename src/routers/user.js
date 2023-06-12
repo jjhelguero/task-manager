@@ -30,16 +30,6 @@ const upload = multer({
   },
 });
 
-router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
-  req.user.avatar = req.file.buffer
-  await req.user.save()
-  res.send();
-  console.log("Upload successful");
-}, (error, req, res, next) => {
-  console.log(error.message)
-  res.status(400).send({error: error.message})
-})
-
 router.post('/users/login', async(req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
@@ -107,5 +97,29 @@ router.delete("/users/me", auth, async (req, res) => {
     res.status(500).send();
   }
 });
-module.exports = router
 
+router.post(
+  "/users/me/avatar",
+  auth,
+  upload.single("avatar"),
+  async (req, res) => {
+    req.user.avatar = req.file.buffer;
+    await req.user.save();
+    res.send();
+    console.log("Avatar uploaded");
+  },
+  (error, req, res, next) => {
+    console.log(error.message);
+    res.status(400).send({ error: error.message });
+  }
+);
+
+router.delete("/users/me/avatar", auth, async (req, res) => {
+  console.log("Attempting to delete avatar");
+  req.user.avatar = undefined;
+  await req.user.save();
+  res.send();
+  console.log("Avatar deleted");
+});
+
+module.exports = router
