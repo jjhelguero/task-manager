@@ -1,11 +1,25 @@
-const API_KEY = process.env.RESEND_API
-const Resend = require('resend')
+const nodemailer = require("nodemailer");
 
-const resend = new Resend(API_KEY);
+const transport = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "fd92cc3d0f903f",
+    pass: "b46f467c7023de"
+  }
+});
 
-resend.emails.send({
-  from: 'onboarding@resend.dev',
-  to: 'jjhelguero@protonmail.com',
-  subject: 'Hello World',
-  html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+const message = {
+  from: "your_email_account@domain.com",
+  to: "recipient_email_account@domain.com",
+  subject: "Welcome!",
+  text: "This is another email from nodemailer. "
+}
+
+transport.sendMail(message, (err, info) => {
+if (err) {
+ console.log(err)
+} else {
+ console.log(info);
+}
 });
