@@ -9,17 +9,37 @@ const transport = nodemailer.createTransport({
   }
 });
 
-const message = {
-  from: "your_email_account@domain.com",
-  to: "recipient_email_account@domain.com",
-  subject: "Welcome!",
-  text: "This is another email from nodemailer. "
+const sendMail = (message) => {
+  transport.sendMail(message, (err, info) => {
+    if (err) {
+     console.log(err)
+    } else {
+     console.log(info);
+    }
+    });
 }
 
-transport.sendMail(message, (err, info) => {
-if (err) {
- console.log(err)
-} else {
- console.log(info);
+const sendWelcomeEmail = (email, name) => {
+  const message = {
+    from: "spammypants@protonmail.com",
+    to: email,
+    subject: "Thanks for joining us",
+    text: `Welcome to the app, ${name}`,
+  }
+  sendMail(message)
 }
-});
+
+const sendCancelationEmail = (email, name) => {
+  const message = {
+    from: "spammypants@protonmail.com",
+    to: email,
+    subject: "We are sad to see you go",
+    text: `Maybe this isn't good bye forever, ${name}`,
+  }
+  sendMail(message)
+}
+
+module.exports = {
+  sendWelcomeEmail,
+  sendCancelationEmail
+}
