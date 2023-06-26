@@ -1,11 +1,11 @@
 const nodemailer = require("nodemailer");
 
 const transport = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
+  host: process.env.MAILTRAP_HOST,
   port: 2525,
   auth: {
-    user: "fd92cc3d0f903f",
-    pass: "b46f467c7023de"
+    user: process.env.MAILTRAP_USER,
+    pass: process.env.MAILTRAP_PASSWORD
   }
 });
 
@@ -31,7 +31,7 @@ const sendWelcomeEmail = (email, name) => {
 
 const sendCancelationEmail = (email, name) => {
   const message = {
-    from: "spammypants@protonmail.com",
+    from: process.env.MAILTRAP_SENDER,
     to: email,
     subject: "We are sad to see you go",
     text: `Maybe this isn't good bye forever, ${name}`,
