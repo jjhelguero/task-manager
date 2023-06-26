@@ -3,7 +3,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "as-a dev nodemon src/index.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
